@@ -2,7 +2,7 @@ package matrix_test
 
 import (
 	"fmt"
-	. "github.com/andrew-torda/goutil/matrix"
+	. "github.com/andrew-torda/matrix"
 	"os"
 	"testing"
 )
