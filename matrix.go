@@ -23,7 +23,8 @@ package matrix
 import (
 	"fmt"
 )
-
+// ------------------------------------------------------------
+//                 float32's
 // FMatrix2d is a two dimensional array of float32's
 type FMatrix2d struct {
 	Mat      [][]float32
@@ -147,7 +148,7 @@ func (mat *BMatrix2d) Size() (nrow, ncol int) {
 	return
 }
 
-// BMatrix2dSize takes a matrix and desired size. If the size is too small,
+// Resize takes a matrix and desired size. If the size is too small,
 // it reallocates the backing array.
 // If the size is big enough, but the dimensions are not right, it
 // runs over the pointers and sets them.
@@ -176,4 +177,62 @@ func (mat *BMatrix2d) String() (s string) {
 		s += "\n"
 	}
 	return s
+}
+
+// ------------------------------------------------------------
+//                 int32's
+// IMatrix2d is a two dimensional array of bytes
+type IMatrix2d struct {
+	Mat      [][]int32
+	fullData []int32
+}
+
+// fix_slices sets the pointers in a matrix.
+// It is in its own function so we can call it for new objects
+// or when resizing an old one.
+func (mat *IMatrix2d) fixSlices(n_r, n_c int) {
+	tmp := mat.fullData
+	mat.Mat = make([][]int32, n_r)
+	for i := range mat.Mat {
+		mat.Mat[i] = tmp[:n_c]
+		tmp = tmp[n_c:]
+	}
+}
+
+// NewIMatrix2d gives us a two dimensional matrix of m x n
+// for int32's.
+func NewIMatrix2d(n_r, n_c int) *IMatrix2d {
+	r := new(IMatrix2d)
+	r.fullData = make([]int32, n_r*n_c)
+	r.fixSlices(n_r, n_c)
+	return r
+}
+
+// Size acts on a IMatrix2d pointer and returns the number of rows and
+// number of columns
+func (mat *IMatrix2d) Size() (nrow, ncol int) {
+	if nrow = len(mat.Mat); nrow == 0 {
+		return 0, 0
+	}
+	ncol = len(mat.Mat[0])
+	return
+}
+
+// Resize takes a matrix and desired size. If the size is too small,
+// it reallocates the backing array.
+// If the size is big enough, but the dimensions are not right, it
+// runs over the pointers and sets them.
+// It will not reduce the space needed by a matrix.
+func (mat *IMatrix2d) Resize(n_r, n_c int) *IMatrix2d {
+	nrow, ncol := mat.Size()
+	if nrow == n_r && ncol == n_c { // If the old dimensions were OK
+		return mat //                  were OK just return
+	}
+
+	if a, b := mat.Size(); n_r*n_c > a*b { // Is new size bigger than old ?
+		mat.fullData = make([]int32, n_r*n_c)
+	}
+	mat.fixSlices(n_r, n_c)
+
+	return mat
 }
