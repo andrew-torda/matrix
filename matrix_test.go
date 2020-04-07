@@ -1,10 +1,9 @@
 package matrix_test
 
 import (
-	"fmt"
-	. "github.com/andrew-torda/matrix"
-	"os"
 	"testing"
+
+	. "github.com/andrew-torda/matrix"
 )
 
 // Just for testing
@@ -46,7 +45,6 @@ func checkMat(m *FMatrix2d, nr int, nc int, t *testing.T) {
 // Make a fresh matrix on each invocation
 func TestFresh(t *testing.T) {
 	for _, sizes := range testSizes {
-		fmt.Fprintln(os.Stderr, "sizes are ", sizes)
 		m := NewFMatrix2d(sizes.nr, sizes.nc)
 		checkMat(m, sizes.nr, sizes.nc, t)
 	}
@@ -67,5 +65,19 @@ func TestResize(t *testing.T) {
 	for _, sizes := range testSizes {
 		m.Resize(sizes.nr, sizes.nc)
 		checkMat(m, sizes.nr, sizes.nc, t)
+	}
+}
+
+func TestIMat(t *testing.T) {
+	const (
+		n_r = 7
+		n_c = 9
+	)
+
+	m := NewIMatrix2d(n_r, n_c)
+	for i := 0; i < n_r; i++ {
+		for j := 0; j < n_c; j++ {
+			m.Mat[i][j] = 1
+		}
 	}
 }
