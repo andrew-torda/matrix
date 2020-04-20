@@ -43,7 +43,7 @@ func (mat *FMatrix2d) fixSlices(n_r, n_c int) {
 	}
 }
 
-// FMatrix2dSize takes a matrix and desired size. If the size is too small,
+// Resize takes a matrix and desired size. If the size is too small,
 // it reallocates the backing array.
 // If the size is big enough, but the dimensions are not right, it
 // runs over the pointers and sets them.
